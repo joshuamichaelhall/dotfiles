@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # Dotfiles Management Script for Joshua Hall
 # Provides explicit backup (save local to GitHub) and restore (get from GitHub) options
 
@@ -29,127 +29,7 @@ NC='\033[0m' # No Color
 
 # Function to print colored messages
 print_message() {
-  echo -e "${2:-$NC}
-
-# Main menu for backup/restore options
-while true; do
-  clear
-  print_message "\n==== DOTFILES MANAGEMENT MENU ====" "$GREEN"
-  print_message "1. BACKUP: Save local dotfiles to repository and GitHub" "$YELLOW"
-  print_message "2. RESTORE: Get dotfiles from GitHub and apply to local system" "$YELLOW"
-  print_message "3. EDIT: Modify which files are tracked" "$YELLOW"
-  print_message "4. QUIT: Exit the script" "$YELLOW"
-  print_message "\nPlease select an option (1-4):" "$GREEN"
-  read -r option
-  
-  case $option in
-    1)
-      # BACKUP option
-      print_message "\n=== BACKING UP LOCAL DOTFILES ===" "$GREEN"
-      copy_dotfiles_to_repo
-      
-      # Ask if user wants to commit and push changes
-      print_message "\nWould you like to commit and push changes to GitHub? (y/n)" "$YELLOW"
-      read -r commit_answer
-      
-      if [[ $commit_answer =~ ^[Yy]$ ]]; then
-        # Check if there are any changes
-        if git -C "$DOTFILES_REPO" status --porcelain | grep -q .; then
-          print_message "Changes detected. Please enter a commit message:" "$YELLOW"
-          read -r commit_message
-          
-          git -C "$DOTFILES_REPO" add .
-          git -C "$DOTFILES_REPO" commit -m "$commit_message"
-          git -C "$DOTFILES_REPO" push origin main || git -C "$DOTFILES_REPO" push origin master
-          
-          print_message "Changes committed and pushed to repository" "$GREEN"
-        else
-          print_message "No changes detected in repository" "$YELLOW"
-        fi
-      fi
-      
-      print_message "\nBackup completed! Press Enter to continue..." "$GREEN"
-      read -r
-      ;;
-      
-    2)
-      # RESTORE option
-      print_message "\n=== RESTORING DOTFILES FROM GITHUB ===" "$GREEN"
-      
-      # Ask if user wants to update the repository first
-      print_message "Would you like to pull the latest changes from GitHub first? (y/n)" "$YELLOW"
-      read -r pull_answer
-      
-      if [[ $pull_answer =~ ^[Yy]$ ]]; then
-        git -C "$DOTFILES_REPO" pull
-        print_message "Repository updated from GitHub" "$GREEN"
-      fi
-      
-      # Ask for confirmation before restore
-      print_message "\nWARNING: This will replace your current dotfiles with those from the repository." "$RED"
-      print_message "Your existing files will be backed up before replacement." "$YELLOW"
-      print_message "Do you want to continue with the restore? (y/n)" "$RED"
-      read -r restore_confirm
-      
-      if [[ $restore_confirm =~ ^[Yy]$ ]]; then
-        "$DOTFILES_REPO/install.sh"
-        print_message "\nRestore completed! Press Enter to continue..." "$GREEN"
-      else
-        print_message "\nRestore cancelled. Press Enter to continue..." "$YELLOW"
-      fi
-      read -r
-      ;;
-      
-    3)
-      # EDIT option
-      print_message "\n=== EDIT TRACKED FILES ===" "$GREEN"
-      
-      # Create temporary file with current dotfiles
-      TMP_FILE=$(mktemp)
-      
-      # If .dotfiles file exists, copy its contents
-      if [ -f "$DOTFILES_REPO/.dotfiles" ]; then
-        cp "$DOTFILES_REPO/.dotfiles" "$TMP_FILE"
-      else
-        # Otherwise, use the default list
-        for file in "${DOTFILES[@]}"; do
-          echo "$file" >> "$TMP_FILE"
-        done
-      fi
-      
-      # Open the file in the user's preferred editor
-      if [ -n "$EDITOR" ]; then
-        $EDITOR "$TMP_FILE"
-      elif command -v vim &> /dev/null; then
-        vim "$TMP_FILE"
-      elif command -v nano &> /dev/null; then
-        nano "$TMP_FILE"
-      else
-        print_message "No suitable editor found. Please install vim or nano." "$RED"
-        rm "$TMP_FILE"
-        read -r
-        continue
-      fi
-      
-      # Save the changes
-      cp "$TMP_FILE" "$DOTFILES_REPO/.dotfiles"
-      rm "$TMP_FILE"
-      
-      print_message "Tracked files list updated. Press Enter to continue..." "$GREEN"
-      read -r
-      ;;
-      
-    4)
-      print_message "\nExiting dotfiles management script. Goodbye!" "$GREEN"
-      exit 0
-      ;;
-      
-    *)
-      print_message "\nInvalid option. Press Enter to try again..." "$RED"
-      read -r
-      ;;
-  esac
-done$1${NC}"
+  echo -e "${2:-$NC}$1${NC}"
 }
 
 # Check if the dotfiles repository exists
@@ -198,7 +78,7 @@ if [ ! -f "$DOTFILES_REPO/install.sh" ]; then
   print_message "Creating install.sh script" "$GREEN"
   
   cat > "$DOTFILES_REPO/install.sh" << 'EOF'
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
@@ -329,3 +209,132 @@ copy_dotfiles_to_repo() {
     fi
   done
 }
+
+# Main menu for backup/restore options
+main_menu() {
+  clear
+  print_message "\n==== DOTFILES MANAGEMENT MENU ====" "$GREEN"
+  print_message "1. BACKUP: Save local dotfiles to repository and GitHub" "$YELLOW"
+  print_message "2. RESTORE: Get dotfiles from GitHub and apply to local system" "$YELLOW"
+  print_message "3. EDIT: Modify which files are tracked" "$YELLOW"
+  print_message "4. QUIT: Exit the script" "$YELLOW"
+  print_message "\nPlease select an option (1-4):" "$GREEN"
+  
+  read -r option
+  
+  case $option in
+    1)
+      # BACKUP option
+      print_message "\n=== BACKING UP LOCAL DOTFILES ===" "$GREEN"
+      copy_dotfiles_to_repo
+      
+      # Ask if user wants to commit and push changes
+      print_message "\nWould you like to commit and push changes to GitHub? (y/n)" "$YELLOW"
+      read -r commit_answer
+      
+      if [[ $commit_answer =~ ^[Yy]$ ]]; then
+        # Check if there are any changes
+        if git -C "$DOTFILES_REPO" status --porcelain | grep -q .; then
+          print_message "Changes detected. Please enter a commit message:" "$YELLOW"
+          read -r commit_message
+          
+          git -C "$DOTFILES_REPO" add .
+          git -C "$DOTFILES_REPO" commit -m "$commit_message"
+          git -C "$DOTFILES_REPO" push origin main || git -C "$DOTFILES_REPO" push origin master
+          
+          print_message "Changes committed and pushed to repository" "$GREEN"
+        else
+          print_message "No changes detected in repository" "$YELLOW"
+        fi
+      fi
+      
+      print_message "\nBackup completed! Press Enter to continue..." "$GREEN"
+      read -r
+      main_menu
+      ;;
+      
+    2)
+      # RESTORE option
+      print_message "\n=== RESTORING DOTFILES FROM GITHUB ===" "$GREEN"
+      
+      # Ask if user wants to update the repository first
+      print_message "Would you like to pull the latest changes from GitHub first? (y/n)" "$YELLOW"
+      read -r pull_answer
+      
+      if [[ $pull_answer =~ ^[Yy]$ ]]; then
+        git -C "$DOTFILES_REPO" pull
+        print_message "Repository updated from GitHub" "$GREEN"
+      fi
+      
+      # Ask for confirmation before restore
+      print_message "\nWARNING: This will replace your current dotfiles with those from the repository." "$RED"
+      print_message "Your existing files will be backed up before replacement." "$YELLOW"
+      print_message "Do you want to continue with the restore? (y/n)" "$RED"
+      read -r restore_confirm
+      
+      if [[ $restore_confirm =~ ^[Yy]$ ]]; then
+        "$DOTFILES_REPO/install.sh"
+        print_message "\nRestore completed! Press Enter to continue..." "$GREEN"
+      else
+        print_message "\nRestore cancelled. Press Enter to continue..." "$YELLOW"
+      fi
+      read -r
+      main_menu
+      ;;
+      
+    3)
+      # EDIT option
+      print_message "\n=== EDIT TRACKED FILES ===" "$GREEN"
+      
+      # Create temporary file with current dotfiles
+      TMP_FILE=$(mktemp)
+      
+      # If .dotfiles file exists, copy its contents
+      if [ -f "$DOTFILES_REPO/.dotfiles" ]; then
+        cp "$DOTFILES_REPO/.dotfiles" "$TMP_FILE"
+      else
+        # Otherwise, use the default list
+        for file in "${DOTFILES[@]}"; do
+          echo "$file" >> "$TMP_FILE"
+        done
+      fi
+      
+      # Open the file in the user's preferred editor
+      if [ -n "$EDITOR" ]; then
+        $EDITOR "$TMP_FILE"
+      elif command -v vim &> /dev/null; then
+        vim "$TMP_FILE"
+      elif command -v nano &> /dev/null; then
+        nano "$TMP_FILE"
+      else
+        print_message "No suitable editor found. Please install vim or nano." "$RED"
+        rm "$TMP_FILE"
+        read -r
+        main_menu
+        return
+      fi
+      
+      # Save the changes
+      cp "$TMP_FILE" "$DOTFILES_REPO/.dotfiles"
+      rm "$TMP_FILE"
+      
+      print_message "Tracked files list updated. Press Enter to continue..." "$GREEN"
+      read -r
+      main_menu
+      ;;
+      
+    4)
+      print_message "\nExiting dotfiles management script. Goodbye!" "$GREEN"
+      exit 0
+      ;;
+      
+    *)
+      print_message "\nInvalid option. Press Enter to try again..." "$RED"
+      read -r
+      main_menu
+      ;;
+  esac
+}
+
+# Start the main menu
+main_menu
