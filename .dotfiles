@@ -1,0 +1,11 @@
+.zshrc
+.zshenv
+.zprofile
+.tmux.conf
+.vimrc
+.config/nvim/init.vim
+.config/nvim/init.lua
+.gitconfig
+.gitignore_global
+.bashrc
+.bash_profile
