@@ -40,6 +40,52 @@ chmod +x ~/dotfiles/dotfiles.sh
 ~/dotfiles/dotfiles.sh
 ```
 
+## Cross-Platform Compatibility
+
+This dotfiles repository is designed to work seamlessly across different platforms:
+
+### Mac Architecture Support
+
+The dotfiles automatically detect and adapt to different Mac architectures:
+
+- **Apple Silicon Macs**: Uses Homebrew at `/opt/homebrew/bin/brew`
+- **Intel Macs**: Uses Homebrew at `/usr/local/bin/brew`
+
+The `.zprofile` file automatically detects your Mac's architecture and configures the appropriate paths, ensuring that all tools and utilities work correctly regardless of which Mac you're using.
+
+### Key Features
+
+- **Auto-detection**: No manual configuration needed when switching between Intel and Apple Silicon Macs
+- **Unified Configuration**: Maintain a single set of dotfiles that works across all your systems
+- **Fallback Mechanisms**: Includes PATH entries for both architectures to ensure tools are found
+- **Improved Installation**: The install script verifies that key tools like Homebrew and tmux are properly initialized
+
+### Troubleshooting
+
+If you experience issues after installation:
+
+1. **Path Issues**: Try opening a new terminal session or run: `source ~/.zprofile`
+2. **Missing Tools**: Run the installation script again with `./install.sh`
+3. **Verify Installation**: Run `verify_installation` to check your environment
+
+### Manual Fix for Common Issues
+
+If you encounter issues with Homebrew or tmux not being found:
+
+```bash
+# For Apple Silicon Macs
+export PATH="/opt/homebrew/bin:$PATH"
+
+# For Intel Macs
+export PATH="/usr/local/bin:$PATH"
+
+# Verify Homebrew is working
+which brew
+
+# Install missing tools if needed
+brew install tmux
+```
+
 ## Repository Structure
 
 ```

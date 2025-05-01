@@ -17,6 +17,13 @@ print_message() {
 # Determine OS
 if [[ "$OSTYPE" == "darwin"* ]]; then
   DOTFILES_OS="macos"
+  
+  # Detect Mac architecture
+  if [[ $(uname -m) == 'arm64' ]]; then
+    print_message "Detected Apple Silicon Mac" "$GREEN"
+  else
+    print_message "Detected Intel Mac" "$GREEN"
+  fi
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   DOTFILES_OS="ubuntu"
 else
@@ -91,5 +98,28 @@ else
   exit 1
 fi
 
+# Apply immediate environment fixes
+if [[ "$DOTFILES_OS" == "macos" ]]; then
+  # Source zprofile to make Homebrew and other tools available immediately
+  print_message "Sourcing ~/.zprofile to apply Homebrew path..." "$GREEN"
+  source "$HOME/.zprofile"
+  
+  # Verify that key tools are available
+  if command -v brew >/dev/null; then
+    print_message "Homebrew successfully initialized" "$GREEN"
+  else
+    print_message "Warning: Homebrew not found in PATH after initialization" "$YELLOW"
+    print_message "You may need to restart your terminal session" "$YELLOW"
+  fi
+  
+  if command -v tmux >/dev/null; then
+    print_message "tmux is available: $(which tmux)" "$GREEN"
+  else
+    print_message "Warning: tmux not found in PATH, installing..." "$YELLOW"
+    brew install tmux
+  fi
+fi
+
 print_message "Dotfiles installation complete!" "$GREEN"
 print_message "A backup of your original files was created at: $BACKUP_DIR" "$YELLOW"
+print_message "You may need to restart your terminal or run 'source ~/.zprofile'" "$YELLOW"

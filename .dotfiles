@@ -11,3 +11,6 @@ shared/.gitconfig
 shared/.tmux.conf
 shared/.bashrc
 shared/.config/nvim/init.lua
+
+# Shared scripts
+shared/scripts/shortcuts/functions.sh
