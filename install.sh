@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
@@ -14,13 +14,33 @@ print_message() {
   echo -e "${2:-$NC}$1${NC}"
 }
 
+# Determine OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  DOTFILES_OS="macos"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  DOTFILES_OS="ubuntu"
+else
+  print_message "Unsupported operating system" "$RED"
+  exit 1
+fi
+
+print_message "Detected OS: $DOTFILES_OS" "$GREEN"
+
 # Create backup directory
 mkdir -p "$BACKUP_DIR"
 
 # Function to backup and symlink files
 setup_symlink() {
-  local source_file="$DOTFILES_DIR/$1"
-  local target_file="$HOME/$1"
+  local file_path=$1
+  local source_file="$DOTFILES_DIR/$file_path"
+  local target_file="$HOME/$(basename "$file_path")"
+  
+  # For nested directories like .config/nvim
+  if [[ "$file_path" == */* ]]; then
+    # Extract the path without the platform prefix
+    local rel_path="${file_path#*/}"
+    target_file="$HOME/$rel_path"
+  fi
   
   # Check if the source file/directory exists in the repo
   if [ ! -e "$source_file" ]; then
@@ -34,8 +54,8 @@ setup_symlink() {
   # Backup existing file/directory if it exists and is not a symlink
   if [ -e "$target_file" ] && [ ! -L "$target_file" ]; then
     print_message "Backing up $target_file to $BACKUP_DIR" "$YELLOW"
-    mkdir -p "$(dirname "$BACKUP_DIR/$1")"
-    cp -R "$target_file" "$BACKUP_DIR/$1"
+    mkdir -p "$(dirname "$BACKUP_DIR/$(basename "$file_path")")"
+    cp -R "$target_file" "$BACKUP_DIR/$(basename "$file_path")"
   fi
   
   # Remove existing symlink or file
@@ -60,7 +80,11 @@ if [ -f "$DOTFILES_DIR/.dotfiles" ]; then
   while IFS= read -r file; do
     # Skip comments and empty lines
     [[ "$file" =~ ^#.*$ || -z "$file" ]] && continue
-    setup_symlink "$file"
+    
+    # Check if file belongs to current OS or shared
+    if [[ "$file" == "$DOTFILES_OS"/* ]] || [[ "$file" == "shared"/* ]]; then
+      setup_symlink "$file"
+    fi
   done < "$DOTFILES_DIR/.dotfiles"
 else
   print_message "Error: .dotfiles file not found. Please create it with a list of dotfiles to symlink." "$RED"

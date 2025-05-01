@@ -1,11 +1,13 @@
-.zshrc
-.zshenv
-.zprofile
-.tmux.conf
-.vimrc
-.config/nvim/init.vim
-.config/nvim/init.lua
-.gitconfig
-.gitignore_global
-.bashrc
-.bash_profile
+# macOS specific files
+macos/.zshrc
+macos/.zprofile
+macos/.bash_profile
+
+# Ubuntu specific files
+# Add your Ubuntu-specific files here
+
+# Shared files
+shared/.gitconfig
+shared/.tmux.conf
+shared/.bashrc
+shared/.config/nvim/init.lua

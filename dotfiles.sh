@@ -157,11 +157,29 @@ fi
 
 # Function to check and copy dotfiles to repository
 copy_dotfiles_to_repo() {
+  # Determine OS
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    DOTFILES_OS="macos"
+  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    DOTFILES_OS="ubuntu"
+  else
+    print_message "Unsupported operating system" "$RED"
+    return
+  fi
+
+  print_message "Detected OS: $DOTFILES_OS" "$GREEN"
   print_message "Checking for new dotfiles to add to repository..." "$GREEN"
   
   for file in "${DOTFILES[@]}"; do
     source_file="$HOME/$file"
-    target_dir="$DOTFILES_REPO/$(dirname "$file")"
+    # Determine if file should go to OS-specific or shared directory
+    if [[ " ${SHARED_FILES[@]} " =~ " $file " ]]; then
+      target_dir="$DOTFILES_REPO/shared/$(dirname "$file")"
+      target_file="$DOTFILES_REPO/shared/$file"
+    else
+      target_dir="$DOTFILES_REPO/$DOTFILES_OS/$(dirname "$file")"
+      target_file="$DOTFILES_REPO/$DOTFILES_OS/$file"
+    fi
     target_file="$DOTFILES_REPO/$file"
     
     # Check if the source file/directory exists
