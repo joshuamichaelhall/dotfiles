@@ -183,3 +183,17 @@ echo "Type 'mks', 'mkpy', 'mkjs', or 'mkrb' to start a new tmux session."
 echo "Use 'vf' to find and edit files, 'proj' to navigate to projects."
 
 # Master the basics. Then practice them every day without fail.
+
+
+
+
+# 6/7 Coding Challenge aliases
+alias ccstart='ruby /Users/jmh/bin/cc-start-day.rb'
+alias cclog='ruby /Users/jmh/bin/cc-log-progress.rb'
+alias ccpush='ruby /Users/jmh/bin/cc-push-updates.rb'
+alias ccstatus='ruby /Users/jmh/bin/cc-status.rb'
+alias ccconfig='ruby /Users/jmh/bin/cc-config.rb'
+alias ccupdate='ruby /Users/jmh/bin/cc-update.rb'
+alias ccbackup='ruby /Users/jmh/bin/cc-installer.rb --backup-logs'
+alias ccrestore='ruby /Users/jmh/bin/cc-installer.rb --restore-logs'
+alias ccuninstall='ruby /Users/jmh/bin/cc-uninstall.rb'

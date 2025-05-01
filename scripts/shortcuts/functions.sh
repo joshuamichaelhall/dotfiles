@@ -207,11 +207,10 @@ detect_platform() {
     fi
 }
 
-# This function contains the line that had parsing issues before
 verify_installation() {
     local platform=$(detect_platform)
     
-    log_info "Verifying installation on $platform platform"  # This line had parsing issues
+    log_info "Verifying installation on ${platform} platform"
     
     if [[ "$platform" == "macos" ]]; then
         if [[ "$MAC_ARCH" == "apple_silicon" ]]; then
