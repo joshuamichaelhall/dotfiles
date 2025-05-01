@@ -1,6 +1,13 @@
 #!/bin/bash
+<<<<<<< Updated upstream
 # Cross-Platform macOS Dotfiles Installer
 # Handles both Apple Silicon and Intel Macs automatically
+||||||| Stash base
+=======
+# Dotfiles installation script
+
+set -e
+>>>>>>> Stashed changes
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
@@ -29,7 +36,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     HOMEBREW_PATH="/usr/local/bin"
   fi
 else
+<<<<<<< Updated upstream
   print_message "This script is specifically for macOS. For other platforms, use the standard install.sh" "$RED"
+||||||| Stash base
+  print_message "Unsupported operating system" "$RED"
+=======
+  print_message "Unsupported operating system: $OSTYPE" "$RED"
+>>>>>>> Stashed changes
   exit 1
 fi
 
@@ -40,14 +53,10 @@ mkdir -p "$BACKUP_DIR"
 setup_symlink() {
   local file_path=$1
   local source_file="$DOTFILES_DIR/$file_path"
-  local target_file="$HOME/$(basename "$file_path")"
   
-  # For nested directories like .config/nvim
-  if [[ "$file_path" == */* ]]; then
-    # Extract the path without the platform prefix
-    local rel_path="${file_path#*/}"
-    target_file="$HOME/$rel_path"
-  fi
+  # Extract the path without the platform prefix (macos/ or ubuntu/ or shared/)
+  local rel_path="${file_path#*/}"
+  local target_file="$HOME/$rel_path"
   
   # Check if the source file/directory exists in the repo
   if [ ! -e "$source_file" ]; then
@@ -60,9 +69,9 @@ setup_symlink() {
   
   # Backup existing file/directory if it exists and is not a symlink
   if [ -e "$target_file" ] && [ ! -L "$target_file" ]; then
-    print_message "Backing up $target_file to $BACKUP_DIR" "$YELLOW"
-    mkdir -p "$(dirname "$BACKUP_DIR/$(basename "$file_path")")"
-    cp -R "$target_file" "$BACKUP_DIR/$(basename "$file_path")"
+    print_message "Backing up $target_file to $BACKUP_DIR/$rel_path" "$YELLOW"
+    mkdir -p "$(dirname "$BACKUP_DIR/$rel_path")"
+    cp -R "$target_file" "$BACKUP_DIR/$rel_path"
   fi
   
   # Remove existing symlink or file
@@ -118,6 +127,7 @@ else
   exit 1
 fi
 
+<<<<<<< Updated upstream
 # 3. Fix the functions.sh parsing error if it exists
 if [ -f "$HOME/.local/bin/functions.sh" ]; then
   print_message "Checking functions.sh for parsing errors..." "$GREEN"
@@ -193,3 +203,11 @@ else
   print_message "A backup of your original files was created at: $BACKUP_DIR" "$YELLOW"
   print_message "You should restart your terminal session for all changes to take effect." "$GREEN"
 fi
+||||||| Stash base
+print_message "Dotfiles installation complete!" "$GREEN"
+print_message "A backup of your original files was created at: $BACKUP_DIR" "$YELLOW"
+=======
+print_message "Dotfiles installation complete!" "$GREEN"
+print_message "A backup of your original files was created at: $BACKUP_DIR" "$YELLOW"
+print_message "Please restart your terminal for changes to take effect." "$GREEN"
+>>>>>>> Stashed changes

@@ -1,15 +1,19 @@
 # macOS specific files
 macos/.zshrc
 macos/.zprofile
+macos/.zshenv
 macos/.bash_profile
+macos/.p10k.zsh
 
 # Ubuntu specific files
 # Add your Ubuntu-specific files here
 
 # Shared files
 shared/.gitconfig
+shared/.gitignore_global
 shared/.tmux.conf
 shared/.bashrc
+shared/.vimrc
 shared/.config/nvim/init.lua
 
 # Shared scripts
