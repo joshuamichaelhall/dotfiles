@@ -1,0 +1,160 @@
+# Shell functions for all platforms
+
+# Create a new directory and enter it
+mkd() {
+    mkdir -p "$@" && cd "$@"
+}
+
+# Find files by name
+ff() {
+    find . -type f -name "*$1*"
+}
+
+# Find directories by name
+fd() {
+    find . -type d -name "*$1*"
+}
+
+# Search for text in files
+search() {
+    grep -r "$1" .
+}
+
+# Extract archives
+extract() {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2) tar xjf $1 ;;
+            *.tar.gz) tar xzf $1 ;;
+            *.bz2) bunzip2 $1 ;;
+            *.rar) unrar e $1 ;;
+            *.gz) gunzip $1 ;;
+            *.tar) tar xf $1 ;;
+            *.tbz2) tar xjf $1 ;;
+            *.tgz) tar xzf $1 ;;
+            *.zip) unzip $1 ;;
+            *.Z) uncompress $1 ;;
+            *.7z) 7z x $1 ;;
+            *) echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Create a backup of a file
+bk() {
+    cp -a "$1" "${1}_$(date +%Y%m%d_%H%M%S)"
+}
+
+# Show disk usage of current directory sorted by size
+duse() {
+    du -sh * | sort -hr
+}
+
+# Find process by name
+fps() {
+    ps aux | grep -i "$1" | grep -v grep
+}
+
+# Kill process by name
+kp() {
+    ps aux | grep -i "$1" | grep -v grep | awk '{print $2}' | xargs kill -9
+}
+
+# Create a new git repo with sensible defaults
+gitinit() {
+    git init
+    touch README.md .gitignore
+    git add README.md .gitignore
+    git commit -m "Initial commit"
+}
+
+# Git checkout branch with fzf
+gcob() {
+    local branches branch
+    branches=$(git branch -vv) &&
+    branch=$(echo "$branches" | fzf +m) &&
+    git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+# Get week number
+week() {
+    date +%V
+}
+
+# Print PATH in a readable format
+pathview() {
+    echo $PATH | tr ":" "\n"
+}
+
+# AWS profile switcher
+awsprofile() {
+    export AWS_PROFILE=$1
+    echo "AWS Profile switched to $AWS_PROFILE"
+}
+
+# AWS region switcher
+awsregion() {
+    export AWS_DEFAULT_REGION=$1
+    echo "AWS Region switched to $AWS_DEFAULT_REGION"
+}
+
+# Run docker container with current directory mounted
+dockrun() {
+    docker run -it --rm -v "$(pwd):/app" -w /app "$@"
+}
+
+# Docker cleanup - remove stopped containers, unused networks, dangling images
+dclean() {
+    docker container prune -f
+    docker network prune -f
+    docker image prune -f
+}
+
+# Docker nuke - remove all containers, images, volumes, networks
+dnuke() {
+    docker container stop $(docker container ls -aq) 2>/dev/null
+    docker container rm $(docker container ls -aq) 2>/dev/null
+    docker image rm $(docker image ls -aq) 2>/dev/null
+    docker volume rm $(docker volume ls -q) 2>/dev/null
+    docker network rm $(docker network ls -q) 2>/dev/null
+}
+
+# Terraform wrapper with auto-init
+tfi() {
+    if [ ! -d ".terraform" ]; then
+        echo "Initializing Terraform..."
+        terraform init
+    fi
+    terraform "$@"
+}
+
+# Weather in terminal
+weather() {
+    curl "wttr.in/$1"
+}
+
+# HTTP server in current directory
+server() {
+    local port="${1:-8000}"
+    open "http://localhost:${port}/"
+    python -m http.server "$port"
+}
+
+# Generate random password
+passgen() {
+    local length="${1:-16}"
+    openssl rand -base64 48 | cut -c1-"$length"
+}
+
+# Backup important dotfiles
+backup_dotfiles() {
+    mkdir -p "$HOME/.dotfiles_backup/$(date +%Y%m%d)"
+    for file in .zshrc .bashrc .vimrc .gitconfig .tmux.conf; do
+        if [ -f "$HOME/$file" ]; then
+            cp "$HOME/$file" "$HOME/.dotfiles_backup/$(date +%Y%m%d)/"
+        fi
+    done
+    echo "Dotfiles backed up to $HOME/.dotfiles_backup/$(date +%Y%m%d)/"
+}

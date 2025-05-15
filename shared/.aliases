@@ -1,0 +1,90 @@
+# Aliases for all platforms
+
+# Navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias ~="cd ~"
+alias -- -="cd -"
+
+# Directory listing
+alias ls="ls --color=auto"
+alias la="ls -la"
+alias ll="ls -l"
+alias l="ls -lah"
+
+# Git aliases
+alias g="git"
+alias gs="git status"
+alias gc="git commit"
+alias gaa="git add ."
+alias gp="git push"
+alias gl="git pull"
+alias gb="git branch"
+alias gco="git checkout"
+alias glg="git log --graph --oneline --all"
+
+# Docker aliases
+alias d="docker"
+alias dc="docker-compose"
+alias dps="docker ps"
+alias dex="docker exec -it"
+alias dlg="docker logs -f"
+
+# Terraform aliases
+alias tf="terraform"
+alias tfi="terraform init"
+alias tfp="terraform plan"
+alias tfa="terraform apply"
+
+# AWS aliases
+alias awswho="aws sts get-caller-identity"
+
+# Common commands
+alias h="history"
+alias c="clear"
+alias x="exit"
+alias cls="clear"
+alias path="echo $PATH | tr ':' '\n'"
+
+# File operations
+alias cp="cp -i"
+alias mv="mv -i"
+alias rm="rm -i"
+
+# Grep with color
+alias grep="grep --color=auto"
+alias egrep="egrep --color=auto"
+alias fgrep="fgrep --color=auto"
+
+# Network
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+alias ping="ping -c 5"
+
+# Show/hide hidden files in Finder (macOS)
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# Reload shell configuration
+alias reload="source ~/.zshrc"
+
+# Development shortcuts
+alias dev="cd ~/Development"
+alias repos="cd ~/repos"
+
+# Python
+alias py="python3"
+alias pip="pip3"
+alias ve="python3 -m venv venv"
+alias va="source venv/bin/activate"
+
+# Node.js
+alias nr="npm run"
+alias ni="npm install"
+alias nid="npm install --save-dev"
+
+# Enhanced commands
+alias cat="bat"
+alias du="ncdu --color dark -rr -x"

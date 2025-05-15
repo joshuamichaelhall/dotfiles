@@ -1,0 +1,98 @@
+# Docker ignore file - common patterns to exclude from builds
+
+# Version control
+.git
+.gitignore
+.gitkeep
+.svn
+.hg
+
+# Build artifacts
+**/node_modules
+**/dist
+**/build
+**/.next
+**/.output
+**/__pycache__
+
+# Editor files
+**/.idea
+**/.vscode
+**/.DS_Store
+**/*.swp
+**/*.swo
+
+# Environment and configuration
+**/.env
+**/.env.*
+!**/.env.example
+**/.aws
+**/*.pem
+**/*.key
+
+# Testing
+**/coverage
+**/.nyc_output
+**/test
+**/tests
+
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Documentation
+**/README.md
+**/CHANGELOG.md
+**/LICENSE
+**/docs
+**/*.md
+
+# Temp files
+**/tmp
+**/temp
+**/.tmp
+**/.temp
+
+# Docker files (avoid recursion)
+*Dockerfile*
+docker-compose*
+.dockerignore
+
+# Specific to languages/frameworks
+# Python
+**/.Python
+**/.pytest_cache
+**/.coverage
+**/htmlcov
+**/*.egg-info
+**/*.egg
+
+# JavaScript/Node.js
+**/package-lock.json
+**/yarn.lock
+**/.npmrc
+**/.yarnrc
+
+# Ruby
+**/.bundle
+**/vendor/bundle
+**/.ruby-version
+**/.ruby-gemset
+
+# Terraform
+**/.terraform
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfvars
+
+# Development tools
+**/Makefile
+**/Gruntfile.js
+**/Gulpfile.js
+**/webpack.config.js
+**/.eslintrc*
+**/.prettierrc*
+**/.editorconfig

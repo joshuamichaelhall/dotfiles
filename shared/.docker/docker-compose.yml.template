@@ -1,0 +1,92 @@
+version: '3.8'
+
+# Template docker-compose file with common services
+# Copy and customize as needed for your specific projects
+
+services:
+  # Web application example
+  webapp:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: my-webapp:latest
+    container_name: webapp
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/app
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Database example
+  db:
+    image: postgres:14-alpine
+    container_name: app-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=app
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Redis for caching
+  redis:
+    image: redis:alpine
+    container_name: app-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Admin GUI for database
+  adminer:
+    image: adminer
+    container_name: app-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Nginx as reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: app-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - webapp
+    networks:
+      - app-network
+    restart: unless-stopped
+
+# Persistent volumes
+volumes:
+  postgres-data:
+  redis-data:
+
+# Dedicated network
+networks:
+  app-network:
+    driver: bridge

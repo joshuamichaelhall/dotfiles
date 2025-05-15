@@ -1,0 +1,117 @@
+# Global .gitignore file
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vs/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+*.pyo
+
+# Logs and databases
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.sqlite
+
+# Temporary files
+*.bak
+*.backup
+*.old
+temp/
+tmp/
+.tmp/
+
+# Package managers
+node_modules/
+bower_components/
+pkg/
+vendor/
+.bundle/
+
+# Build directories
+dist/
+build/
+.sass-cache/
+*.css.map
+
+# Environment and config files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.aws/credentials
+
+# Security and API keys
+*.pem
+*.key
+*.cert
+*.p12
+
+# Dependencies and lock files
+package-lock.json
+yarn.lock
+Gemfile.lock
+Pipfile.lock
+composer.lock
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+.env/
+*.egg-info/
+
+# Ruby
+.bundle/
+vendor/bundle
+
+# macOS specific
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows specific
+Desktop.ini
+$RECYCLE.BIN/
